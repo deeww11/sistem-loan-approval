@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Kasus</title>
+    <style>
+        body{
+            font-family: Arial;
+            background:#f4f6f9;
+            padding:30px;
+        }
+        h1{
+            text-align:center;
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+        th,td{
+            padding:10px;
+            border:1px solid #ddd;
+            text-align:center;
+        }
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+        tr:nth-child(even){
+            background:#f2f2f2;
+        }
+        .status-approve{
+            color:green;
+            font-weight:bold;
+        }
+        .status-reject{
+            color:red;
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Database Basis Kasus</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Loan ID</th>
+            <th>Dependents</th>
+            <th>Self Employed</th>
+            <th>Income / Year</th>
+            <th>Loan Amount</th>
+            <th>Loan Term</th>
+            <th>CIBIL Score</th>
+            <th>Status</th>
+            <th>Tanggal Masuk</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for k in kasus %}
+        <tr>
+            <td>{{ k.loan_id }}</td>
+            <td>{{ k.no_of_dependents }}</td>
+            <td>{{ k.self_employed }}</td>
+            <td>Rp {{ "{:,.0f}".format(k.income_annum) }}</td>
+            <td>Rp {{ "{:,.0f}".format(k.loan_amount) }}</td>
+            <td>{{ k.loan_term }} bulan</td>
+            <td>{{ k.cibil_score }}</td>
+
+            <td>
+                {% if k.loan_status == 'Approved' %}
+                    <span class="status-approve">Approved</span>
+                {% else %}
+                    <span class="status-reject">Rejected</span>
+                {% endif %}
+            </td>
+
+            <td>{{ k.tanggal_masuk }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div style="margin-top:20px; text-align:center;">
+
+    {% if page > 1 %}
+        <a href="{{ url_for('case.case_base', page=page-1) }}">
+            ◀ Previous
+        </a>
+    {% endif %}
+
+    <span style="margin:0 15px;">
+        Page {{ page }} of {{ total_pages }}
+    </span>
+
+    {% if page < total_pages %}
+        <a href="{{ url_for('case.case_base', page=page+1) }}">
+            Next ▶
+        </a>
+    {% endif %}
+
+</div>
+</body>
+</html>
