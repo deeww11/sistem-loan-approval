@@ -29,13 +29,12 @@
 <script>
 const API="http://127.0.0.1:5000";
 
-// 🔥 AUTO LOAD saat halaman dibuka
 window.onload = async () => {
     const res = await fetch(`${API}/me`, {credentials:"include"});
 
     if(res.status !== 200){
         alert("Silakan login dulu!");
-        window.location.href="/login-ui";
+        window.location.href="/";
         return;
     }
 

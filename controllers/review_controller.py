@@ -11,15 +11,12 @@ def get_db():
         database="loan_data"
     )
 
-# ==============================
-# GET DATA REVIEW MILIK ANALIS LOGIN
-# ==============================
 @review_bp.route("/pending", methods=["GET"])
 def get_data_review():
+
+    # 🔐 wajib login dulu
     if "user" not in session:
         return jsonify({"message":"Belum login"}),401
-
-    id_analis = session["user"]   # ← id_user dianggap id_analis
 
     db = get_db()
     cursor = db.cursor(dictionary=True)
@@ -29,22 +26,20 @@ def get_data_review():
         r.id_pengajuan,
         r.keputusan,
         r.catatan,
+        r.tanggal_review,
         p.income_annum,
         p.loan_amount,
         p.cibil_score
     FROM review_analis r
     JOIN pengajuan p ON r.id_pengajuan = p.id_pengajuan
-    WHERE r.id_analis = %s
     ORDER BY r.tanggal_review DESC
     """
-    cursor.execute(query,(id_analis,))
+
+    cursor.execute(query)
     data = cursor.fetchall()
 
     return jsonify({"data":data})
 
-# ==============================
-# REVISE KEPUTUSAN
-# ==============================
 @review_bp.route("/revise/<int:id_pengajuan>", methods=["PUT"])
 def revise_keputusan(id_pengajuan):
     db = get_db()
@@ -64,19 +59,11 @@ def revise_keputusan(id_pengajuan):
 
     return jsonify({"message":"Revisi berhasil"})
 
-
-# ==============================
-# GENERATE LOAN ID
-# ==============================
 def generate_loan_id(cursor):
     cursor.execute("SELECT COUNT(*) FROM basis_kasus")
     count = cursor.fetchone()[0] + 1
-    return f"L{count:03d}"
+    return f"LID{count:04d}"
 
-
-# ==============================
-# RETAIN → SIMPAN KE BASIS_KASUS
-# ==============================
 @review_bp.route("/retain/<int:id_pengajuan>", methods=["POST"])
 def retain_case(id_pengajuan):
     db = get_db()
