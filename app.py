@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from controllers.auth_controller import auth
+from controllers.dashboard_controller import dashboard
 from config import Config
 from controllers.form_controller import form_bp
 from controllers.case_controller import case
@@ -15,6 +16,7 @@ app.config.from_object(Config)
 
 # Register blueprint
 app.register_blueprint(auth)
+app.register_blueprint(dashboard)
 app.register_blueprint(form_bp, url_prefix='/form')
 app.register_blueprint(case)
 app.register_blueprint(hasil_bp)
@@ -23,20 +25,10 @@ app.register_blueprint(profil_bp, url_prefix='/profil')
 app.register_blueprint(riwayat_bp)
 app.register_blueprint(evaluation_bp)
 
-# Dashboard
-@app.route('/dashboard')
-def dashboard():
-    return render_template('dashboard.html')
-
 # Review UI
 @app.route("/review-ui")
 def review_ui():
     return render_template("review.html")
-
-# RIWAYAT
-@app.route("/riwayat")
-def riwayat():
-    return render_template("riwayat.html")
 
 if __name__ == '__main__':
     app.run(debug=True)
